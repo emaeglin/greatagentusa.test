@@ -1,0 +1,4 @@
+require valid-user
+Authname "Basic Auth"
+Authtype Basic
+AuthUserFile "/home/maeglin/.passwd"

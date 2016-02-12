@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Phone Number Verification & Follow Up options</title>
+ <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  
+  <link rel='shortcut icon' href='http://cdn.top-in-austin.com/greatfavorcon.ico' type='image/x-icon'/ >
+  
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+      
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+  <style>
+  .btn-warning {
+    background-color: #428bca !important;
+    background-image: none;
+    border: 1px solid #428bca;
+  }
+  
+  .has-error {
+      background-color: rgb(242,222,222) !important;
+      background-image: none;
+      border: 1px solid rgb(203,120,119);
+  }
+  
+  textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
+    border-color: rgba(229, 103, 23, 0.8);
+    border-width: 3px;
+    box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+    outline: 0 none;
+  }
+  
+  #content {
+    text-align: center;
+    min-height: 700px;
+  }
+  </style>
+</head>
+<body>
+
+<div id="content">
+  <h1>Some content</h1>
+  <h2>Some content</h2>
+  <h3>Some content</h3>
+  <h4>Some content</h4>
+  <h5>Some content</h5>
+  <h6>Some content</h6>
+  <br><br>
+  <h1>Click anywhere</h1>
+  <h2>Click anywhere</h2>
+  <h3>Click anywhere</h3>
+  <h4>Click anywhere</h4>
+  <h5>Click anywhere</h5>
+  <h6>Click anywhere</h6>
+  
+</div>
+
+<div id="paynow" class="modal in" style="z-index: 30000; display: none;" aria-hidden="true">
+  <div style="width:100%;height: 100%;background-color:rgba(0,0,0,0.9);z-index:29000;position: fixed;top:0;left: 0"></div>
+  <div style="z-index:29001;" class="modal-dialog"><div class="modal-content">
+
+  <!-- note the use of "hide" class -->
+  <form id="clientprofileform" name="clientprofileform" action="api/user.php" method="post" class=" form-horizontal form-group form-horizontal contact-agent-form" role="form">
+    <input type="hidden" name="unlock" value="true">
+    <input type="hidden" id="HouseID" name="HouseID" value="258200">
+    
+    <div class=" modal-header hidden-xs hidden-sm">    <a data-dismiss="modal" id="signupclosebox" class="close hidden">X</a>
+    
+    <div style=";text-align:center">
+    
+    <h3 style="font-weight:600;font-size:30px">CREATE YOUR FREE ACCOUNT</h3>
+    </div></div>
+    <div style="text-align:center;;" class="modal-body">
+      <p style="font-weight:100;font-size:16px;">
+        <span class="visible-xs visible-sm">
+          <b>CREATE YOUR FREE ACCOUNT</b>
+          <br>
+        </span>Access MLS home photos, details and save your favorite listings.
+        <span class="hidden-xs hidden-sm">
+          <br>
+          (Prices, pictures and inventory current as of Thursday, February 11, 2016) 
+        </span>
+      </p>
+      <div style="width:100%;margin-top:40px" class="hidden-xs hidden-sm"></div>
+      <div style="" class="form-group">
+        <label for="ClientName" class="col-sm-4 col-xs-4 control-label">Name</label>
+        <div class="col-sm-6 col-xs-8">
+          <input type="text" id="ClientName" placeholder="E.g. Bob Edwards" class="form-control" name="ClientName" value="Bohdan">
+        </div>
+      </div>
+  
+    <div class="form-group">
+      <label for="ClientPhone" class="control-label col-sm-4 col-xs-4 ">Phone</label>
+      <div class="col-sm-6 col-xs-8">
+	<input type="text" placeholder="# used as password" id="ClientPhone" class="form-control" name="ClientPhone" value="+1-512-619-6498">
+        <input type="hidden" name="defaultCountry" id="defaultCountry" value="US">
+      </div>
+    </div>
+	
+    <div class="form-group">
+      <label for="ClientEmail" class="col-sm-4 col-xs-4 control-label">E-mail</label>
+      <div class="controls col-sm-6 col-xs-8 ">
+        <input type="text" placeholder="E.g. bob.edwards@gmail.com" id="ClientEmail" class="form-control" name="ClientEmail" value="emaeglin@gmail.com">
+        <span class="hidden-xs hidden-sm">
+          <br><br>
+        </span>
+      </div>
+    </div>
+    
+    <div style="" class="form-group visible-xs visible-sm">
+      <div class="  col-sm-6 col-xs-offset-4 col-xs-8  ">
+        <input type="submit" value="Create Profile" id="requestInfoClick" style="max-height:none;" class="btn btn-warning btn-lg visible-sm visible-xs requestInfoClick">
+      </div>
+    </div>
+
+    <p id="clicktosigninp">
+      Already have a profile? 
+      <a id="clicktosignin" onclick="login=true; oldnameval=$('#ClientName').val(); $('#ClientName').val('signing in'); $('.modal-header h3').text('Sign in'); $('.modal-body .form-group').first().hide(); $('[id=requestInfoClick]').val('SIGN IN'); $(this).parent().hide(); $('#clicktocreate').show(); $('#clicktocreatep').show(); return false;" href="#">
+        Click here.
+      </a>
+    </p>
+
+    <p id="clicktocreatep" style="display: none;">
+      Don't have a profile yet?
+      <a id="clicktocreate" style="display: none;" onclick="login=false; $('#clicktosigninp').show(); $('#ClientName').val(''); $('#clicktosignin').show(); $('.modal-header h3').text('CREATE YOUR FREE ACCOUNT'); $('.modal-body .form-group').first().show(); $('[id=requestInfoClick]').val('Create Profile'); $(this).parent().hide(); return false;" href="#">
+        Click here.
+      </a>
+   </p>
+
+
+    <input type="hidden" value="The client provided this information to get access to website data. Please start pre-marketing ASAP." name="ClientMessage">
+      <p></p>
+  </div>
+    
+  <div style="text-align:center" class="modal-footer  hidden-xs hidden-sm">
+    <input type="submit" value="Create Profile" id="requestInfoClick" style="max-height:none" class="btn btn-warning btn-lg requestInfoClick">
+  </div>
+  </form>
+  </div>
+  </div>
+</div>
+
+
+<script src="js/main.js"></script>    
+
+<script src="js/phonenumbers/compiled.js"></script>
+<script src="js/phonenumbers/check.js"></script>
+
+</body>
+</html>
