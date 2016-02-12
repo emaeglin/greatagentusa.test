@@ -11,8 +11,7 @@ $User = new UserModel(array(
 
 if ($User->complete()) {
     $User->save();
-    
-    PageModel::Success();
+    PageModel::Success($User->UserData['IsCompanyPhone']);
 } else {
     PageModel::Error();
 }

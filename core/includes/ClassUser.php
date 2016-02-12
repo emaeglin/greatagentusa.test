@@ -2,7 +2,7 @@
 
 class UserModel {
     
-    private $UserData = false;
+    public  $UserData = false;
     private $google = false;
     private $twilio = false;
 
@@ -31,8 +31,5 @@ class UserModel {
     }
     
     public function Save() {
-        echo "<pre>";
-        var_dump($this->UserData);
-        echo "</pre>";
     }
 }
