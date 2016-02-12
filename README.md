@@ -1,6 +1,8 @@
+<snippet>
+  <content><![CDATA[
 # greatagentusa.test
 
-*www/
+* www/
 **    index.html : Main HTML file with registration form
 **    js/
 ***        phonenumbers/ : 
@@ -17,3 +19,7 @@
 ****        ClassPage.php : Class for pages rendering
 ****        ClassPhone.php : Class for phone validation
 ****        ClassUser.php : Class for User 
+
+]]></content>
+  <tabTrigger>readme</tabTrigger>
+</snippet>
