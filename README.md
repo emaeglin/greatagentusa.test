@@ -1,25 +1,19 @@
-<snippet>
-  <content><![CDATA[
 # greatagentusa.test
 
-* www/
-**    index.html : Main HTML file with registration form
-**    js/
-***        phonenumbers/ : 
-****            chekck.js   : JS phone validation function
-****            compiled.js : http://closure-compiler.appspot.com/home - compiled js libraries for phone validation
-***        main.js : Main JS file
-**    api/
-***       user.php    : User controller
-** core/
-***    config.php      : Config file [removed from git]
-***    init.php
-***    includes/
-****        ClassDb.php : Class for working with DB [empty now]
-****        ClassPage.php : Class for pages rendering
-****        ClassPhone.php : Class for phone validation
-****        ClassUser.php : Class for User 
-
-]]></content>
-  <tabTrigger>readme</tabTrigger>
-</snippet>
+- __www/__
+  - __index.html__ : Main HTML file with registration form
+  - __js/__
+    - __phonenumbers/__ 
+      - __chekck.js__   : JS phone validation function
+      - __compiled.js__ : http://closure-compiler.appspot.com/home - compiled js libraries for phone validation
+    - __main.js__ : Main JS file
+  - __api/__
+      - __user.php__    : User controller
+- __core/__
+  - __config.php__      : Config file _[removed from git]_
+  - __init.php__
+  - __includes/__
+    - __ClassDb.php__ : Class for working with DB _[empty now]_
+    - __ClassPage.php__ : Class for pages rendering
+    - __ClassPhone.php__ : Class for phone validation
+    - __ClassUser.php__ : Class for User 
