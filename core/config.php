@@ -10,6 +10,11 @@ $twilio = array (
     'AuthToken'    => '2621455c6bea1ccfbbdf12241b529185',
 );
 
+$twilioTest = array (
+    'AccountSID'   => 'ACefa52f762fcdc23583853810fb937dba',
+    'AuthToken'    => '2621455c6bea1ccfbbdf12241b529185',
+);
+
 $google = array(
     'ApiKey'        =>  'AIzaSyB-V9wfmLSJXkXAxlpdhvahiSh6zCuuBAw',
     'MapsApiUrl'    =>  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyB-V9wfmLSJXkXAxlpdhvahiSh6zCuuBAw&language=en&location=39,-96&rankby=distance&keyword=%s',

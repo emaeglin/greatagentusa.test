@@ -7,34 +7,61 @@
 
 class PhoneModel
 {
-    static function TwilioLookup($twilio, $number) 
+    public $number = "";
+    public $formatted_number = "";
+    
+    private $google = false;
+    private $twilio = false;
+    
+    public $error = "";
+    
+    public function __construct($config, $number = "") 
     {
-        if (empty($number)) {
+        $this->google   = $config['google'];
+        $this->twilio   = $config['twilio'];
+
+        $this->number = $number;
+        $this->PrepareForInsert();
+    }
+    
+    public function Validate()
+    {
+        if (!$this->IsValidPhone()) {
+            $this->number = false;
+            return false;
+        }
+        $this->TwilioLookup();
+    }
+
+    public function TwilioLookup() 
+    {
+        if (empty($this->number)) {
             return false;
         }
 
-        $ch = curl_init(sprintf($twilio['LookupUrl'], trim($number)));
+        $ch = curl_init(sprintf($this->twilio['LookupUrl'], trim($this->number)));
         
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,    true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,    false);
         curl_setopt($ch, CURLOPT_HTTPAUTH,          CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,    2);
-        curl_setopt($ch, CURLOPT_USERPWD,           sprintf("%s:%s", $twilio['AccountSID'], $twilio['AuthToken']));
+        curl_setopt($ch, CURLOPT_USERPWD,           sprintf("%s:%s", $this->twilio['AccountSID'], $this->twilio['AuthToken']));
         
         $response = curl_exec($ch);
         $response = json_decode($response);
         
         if (isset($response->phone_number) && !empty($response->phone_number)) {
-            return $response->phone_number;
+            $this->number = $response->phone_number;
+            return true;
         }
         
         return false;
     }
     
-    static function IsCompanyPhone($google, $numer)
+    public function IsCompanyPhone()
     {
-        $url = sprintf($google['SearchApiUrl'],$numer, isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "10.0.0.1");
-        
+        $url = sprintf($this->google['SearchApiUrl'], $this->number, isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "10.0.0.1");
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -50,7 +77,7 @@ class PhoneModel
         $cname = explode(".", $response->responseData->results[0]->visibleUrl);
         $company_name = ($cname[0] == 'www') ? $cname[1] : $cname[0];
         
-        $url = sprintf($google['MapsApiUrl'], $company_name);
+        $url = sprintf($this->google['MapsApiUrl'], $company_name);
         
         curl_setopt($ch, CURLOPT_URL, $url);
         $response = curl_exec($ch);
@@ -64,9 +91,9 @@ class PhoneModel
         return true;
     }
     
-    static function IsValidPhone($number)
+    public function IsValidPhone()
     {
-        if (!$number || !is_string($number)) {
+        if (!$this->number || !is_string($this->number)) {
             return false;
         }
 
@@ -83,16 +110,16 @@ class PhoneModel
         */
         $pattern_2 = '/^\(\d{3}\)\s\d{3}-\d{4}$/';
 
-        if (preg_match($pattern_1, trim($number)) || preg_match($pattern_2, trim($number))) {
+        if (preg_match($pattern_1, trim($this->number)) || preg_match($pattern_2, trim($this->number))) {
             return true;
         }
 
         return false;
     }
     
-    static function PrepareForInsert($number)
+    public function PrepareForInsert()
     {
-        $split = str_split(str_replace("+","",$number));
+        $split = str_split(str_replace(array("+","-"),"",$this->number));
         
         if (count($split) == 11) {
             unset($split[0]);
@@ -109,6 +136,7 @@ class PhoneModel
             }
         }
         
-        return $formatted_number;
+        $this->formatted_number = $formatted_number;
+        return true;
     }
 }

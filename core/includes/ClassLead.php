@@ -7,6 +7,9 @@ class LeadModel
     private $twilio = false;
     private $DBconfig = false;
     
+    private $phone = NULL;
+
+
     public $Id  = 0;
 
     public $error = "";
@@ -19,11 +22,18 @@ class LeadModel
         
         $post=array_map('trim',$_POST);
         
+        if (isset($post['ClientPhone']) && !empty($post['ClientPhone'])) {
+            $this->phone = new PhoneModel($config, $post['ClientPhone']);
+            $this->phone->Validate();
+        } else {
+            return false;
+        }
+        
         $this->UserData = array (
-            'ClientPhone'    => (isset($post['ClientPhone']) && PhoneModel::IsValidPhone($post['ClientPhone'])) ? PhoneModel::TwilioLookup($this->twilio, $post['ClientPhone'])  : false,
-            'ClientName'     => (isset($post['ClientName'])  && !empty($post['ClientName']))     ? $post['ClientName']  : false,
-            'ClientEmail'    => (isset($post['ClientEmail']) && !empty($post['ClientEmail']))    ? $post['ClientEmail'] : false,
-            'IsCompanyPhone' => (isset($post['ClientPhone']) && !empty($post['ClientPhone']))    ? PhoneModel::IsCompanyPhone($this->google, $post['ClientPhone'])  : false,
+            'ClientPhone'    => $this->phone->number,
+            'ClientName'     => (isset($post['ClientName'])  && !empty($post['ClientName']))    ? $post['ClientName']  : false,
+            'ClientEmail'    => (isset($post['ClientEmail']) && !empty($post['ClientEmail']))   ? $post['ClientEmail'] : false,
+            'IsCompanyPhone' => $this->phone->IsCompanyPhone()
         );
     }
     
@@ -44,8 +54,8 @@ class LeadModel
         //check did user exist
         $Db->PrepareQuery(
             "SELECT `LeadID` FROM `GA_Lead` WHERE `Phone` = '%s' LIMIT 1;",
-            array(
-                PhoneModel::PrepareForInsert($this->UserData['ClientPhone'])
+            array (
+                $this->phone->formatted_number
                 )
         );
         
@@ -54,7 +64,7 @@ class LeadModel
         if (isset($result->LeadID)) {
             $this->error = sprintf(
                     "User with phone number %s already exist",
-                    PhoneModel::PrepareForInsert($this->UserData['ClientPhone'])
+                    $this->phone->formatted_number
             );
             return false;
         }
@@ -64,7 +74,7 @@ class LeadModel
                 "INSERT INTO `GA_Lead` (`Name`, `Phone`, `Email`) VALUES ('%s','%s', '%s');",
                 array(
                     $this->UserData['ClientName'],
-                    PhoneModel::PrepareForInsert($this->UserData['ClientPhone']),
+                    $this->phone->formatted_number,
                     $this->UserData['ClientEmail']
                 )
         );

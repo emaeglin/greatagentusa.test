@@ -5,6 +5,9 @@ class PhoneTest extends PHPUnit_Framework_TestCase
 {
     private $config = array();
     
+    private $phone = NULL;
+
+
     public function __construct()
     {
         global $google;
@@ -15,45 +18,66 @@ class PhoneTest extends PHPUnit_Framework_TestCase
             'twilio'    => $twilio,
             'DBconfig'  => $DBconfig
         );
+        
+        $this->phone = new PhoneModel($this->config, "");
     }
     
     public function testCanBeInvalid() 
     {
-        $this->assertEquals(false, PhoneModel::IsValidPhone("a"));
-        $this->assertEquals(false, PhoneModel::IsValidPhone(1));
-        $this->assertEquals(false, PhoneModel::IsValidPhone(false));
-        $this->assertEquals(false, PhoneModel::IsValidPhone(true));
-        $this->assertEquals(false, PhoneModel::IsValidPhone(array(1,1)));
+        $this->phone->number = "a";
+        $this->assertEquals(false, $this->phone->IsValidPhone());
+        $this->phone->number = 1;
+        $this->assertEquals(false, $this->phone->IsValidPhone());
+        $this->phone->number = false;
+        $this->assertEquals(false, $this->phone->IsValidPhone());
+        $this->phone->number = true;
+        $this->assertEquals(false, $this->phone->IsValidPhone());
+        $this->phone->number = array(1,1);
+        $this->assertEquals(false, $this->phone->IsValidPhone());
     }
     
     public function testCanBeValid()
     {
-        $this->assertEquals(true, PhoneModel::IsValidPhone("+1-541-754-3010"));
-        $this->assertEquals(true, PhoneModel::IsValidPhone("1-541-754-3010"));
-        $this->assertEquals(true, PhoneModel::IsValidPhone("(541) 754-3010"));
+        $this->phone->number = "+1-541-754-3010";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        $this->phone->number = "1-541-754-3010";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        $this->phone->number = "(541) 754-3010";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
     }
     
     public function testCanBeCompanyPhone()
     {
-        $this->assertEquals(true, PhoneModel::IsCompanyPhone($this->config['google'], "+1-800–692–7753"));
+        $this->phone->number = "+1-800–692–7753";
+        $this->assertEquals(true, $this->phone->IsCompanyPhone());
     }
     
     public function testCanBeNotCompanyPhone()
     {
-        $this->assertEquals(false, PhoneModel::IsCompanyPhone($this->config['google'], "+1-512-619-6498"));
+        $this->phone->number = "+1-512-619-6498";
+        $this->assertEquals(false, $this->phone->IsCompanyPhone());
     }
     
     public function testCanBeInvalidTwilioLookup()
     {
-        $this->assertEquals(false, PhoneModel::TwilioLookup($this->config['twilio'], "+1-541-754-30"));
-        $this->assertEquals(false, PhoneModel::TwilioLookup($this->config['twilio'], ""));
-        $this->assertEquals(false, PhoneModel::TwilioLookup($this->config['twilio'], 123));
-        $this->assertEquals(false, PhoneModel::TwilioLookup($this->config['twilio'], "kasdasd"));
+        $this->phone->number = "+1-541-754-30";
+        $this->assertEquals(false, $this->phone->TwilioLookup());
+        $this->phone->number = "";
+        $this->assertEquals(false, $this->phone->TwilioLookup());
+        $this->phone->number = 123;
+        $this->assertEquals(false, $this->phone->TwilioLookup());
+        $this->phone->number = "kasdasd";
+        $this->assertEquals(false, $this->phone->TwilioLookup());
     }
     
     public function testCanBeValidTwilioLookup()
     {
-        $this->assertEquals("+15417543010", PhoneModel::TwilioLookup($this->config['twilio'], "+1-541-754-3010"));
-        $this->assertEquals("+15417543010", PhoneModel::TwilioLookup($this->config['twilio'], "1-541-754-3010"));
+        $this->phone->number = "+1-541-754-3010";
+        $this->assertEquals(true, $this->phone->TwilioLookup());
+        $this->assertEquals("+15417543010", $this->phone->number);
+        
+        $this->phone->number = "1-541-754-3010";
+        $this->assertEquals(true, $this->phone->TwilioLookup());
+        $this->assertEquals("+15417543010", $this->phone->number);
     }
 }
