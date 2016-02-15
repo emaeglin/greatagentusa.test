@@ -20,6 +20,7 @@ class PhoneModel {
         
         $response = curl_exec($ch);
         $response = json_decode($response);
+        
         if (isset($response->phone_number) && !empty($response->phone_number))
             return $response->phone_number;
         
@@ -27,7 +28,7 @@ class PhoneModel {
     }
     
     static function IsCompanyPhone ($google, $numer) {
-        $url = sprintf($google['SearchApiUrl'],$numer, $_SERVER['REMOTE_ADDR']);
+        $url = sprintf($google['SearchApiUrl'],$numer, isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "10.0.0.1");
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -55,5 +56,28 @@ class PhoneModel {
             return false;
         
         return true;
+    }
+    
+    static function IsValidPhone ($number) {
+        if (!$number || !is_string($number))
+        return false;
+
+        /*
+        * Pattern for International or Dialed in the US number
+        * International: +1-541-754-3010
+        * Dialed in the US: 1-541-754-3010
+        */
+        $pattern_1 = '/^(\+?)(1{1})-\d{3}-\d{3}-\d{4}$/';
+
+        /*
+        * Pattern for Domestic number
+        * Domestic: (541) 754-3010
+        */
+        $pattern_2 = '/^\(\d{3}\)\s\d{3}-\d{4}$/';
+
+        if (preg_match($pattern_1, trim($number)) || preg_match($pattern_2, trim($number)))
+            return true;
+
+        return false;
     }
 }

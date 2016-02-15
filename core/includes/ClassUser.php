@@ -14,7 +14,7 @@ class UserModel {
         $post=array_map('trim',$_POST);
         
         $this->UserData = array (
-            'ClientPhone'    => (isset($post['ClientPhone']) && !empty($post['ClientPhone']))    ? PhoneModel::TwilioLookup($this->twilio, $post['ClientPhone'])  : false,
+            'ClientPhone'    => (isset($post['ClientPhone']) && PhoneModel::IsValidPhone($post['ClientPhone'])) ? PhoneModel::TwilioLookup($this->twilio, $post['ClientPhone'])  : false,
             'ClientName'     => (isset($post['ClientName'])  && !empty($post['ClientName']))     ? $post['ClientName']  : false,
             'ClientEmail'    => (isset($post['ClientEmail']) && !empty($post['ClientEmail']))    ? $post['ClientEmail'] : false,
             'IsCompanyPhone' => (isset($post['ClientPhone']) && !empty($post['ClientPhone']))    ? PhoneModel::IsCompanyPhone($this->google, $post['ClientPhone'])  : false,
