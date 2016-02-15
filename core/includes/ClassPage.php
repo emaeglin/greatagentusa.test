@@ -1,7 +1,9 @@
 <?php
 
-class PageModel {
-    static function Success($IsCompanyPhone=false) {
+class PageModel
+{
+    static function Success($IsCompanyPhone=false)
+    {
         echo "Success<br>";
         if ($IsCompanyPhone) {
             echo "Company Phone";
@@ -10,7 +12,11 @@ class PageModel {
         }
     }
     
-    static function Error() {
+    static function Error($error = false)
+    {
         echo "Error";
+        if ($error) {
+            echo "<br><br>" . $error;
+        }
     }
 }

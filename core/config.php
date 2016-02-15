@@ -15,3 +15,10 @@ $google = array(
     'MapsApiUrl'    =>  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyB-V9wfmLSJXkXAxlpdhvahiSh6zCuuBAw&language=en&location=39,-96&rankby=distance&keyword=%s',
     'SearchApiUrl'  =>  'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&userip=%s'
 );
+
+$DBconfig = array (
+    "host"      => "maeglin.mysql.ukraine.com.ua",
+    "username"  => "maeglin_emaeglin",
+    "passwd"    => "9vtccaps",
+    "dbname"    => "maeglin_emaeglin",
+);
