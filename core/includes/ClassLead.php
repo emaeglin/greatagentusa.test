@@ -3,6 +3,11 @@
 class LeadModel 
 {
     public  $UserData = false;
+    
+    private $SalesPersonID = 1;
+    private $Source = "emaeglin test";
+    private $MLSSourceID = 1;
+
     private $google = false;
     private $twilio = false;
     private $DBconfig = false;
@@ -29,19 +34,24 @@ class LeadModel
             return false;
         }
         
+        if (isset($config['newLeadSource'])) {
+            $this->Source = $config['newLeadSource'];
+        }
+        
         $this->UserData = array (
-            'ClientPhone'    => $this->phone->number,
-            'ClientName'     => (isset($post['ClientName'])  && !empty($post['ClientName']))    ? $post['ClientName']  : false,
-            'ClientEmail'    => (isset($post['ClientEmail']) && !empty($post['ClientEmail']))   ? $post['ClientEmail'] : false,
+            'Phone'    => $this->phone->number,
+            'Name'     => (isset($post['ClientName'])  && !empty($post['ClientName']))    ? $post['ClientName']  : false,
+            'Email'    => (isset($post['ClientEmail']) && !empty($post['ClientEmail']))   ? $post['ClientEmail'] : false,
+            'HouseID'  => (isset($post['HouseID']) && !empty($post['HouseID']))   ? $post['HouseID'] : false,
             'IsCompanyPhone' => $this->phone->IsCompanyPhone()
         );
     }
     
     public function Complete() 
     {
-        if ($this->UserData['ClientPhone'] === false ||
-            $this->UserData['ClientName']  === false ||
-            $this->UserData['ClientEmail'] === false
+        if ($this->UserData['Phone'] === false ||
+            $this->UserData['Name']  === false ||
+            $this->UserData['Email'] === false
         ) return false;
         
         return true;
@@ -51,36 +61,78 @@ class LeadModel
     {
         $Db = new DbModel($this->DBconfig);
         
-        //check did user exist
+        //GET MLSSourceID
         $Db->PrepareQuery(
-            "SELECT `LeadID` FROM `GA_Lead` WHERE `Phone` = '%s' LIMIT 1;",
+            "SELECT `MLSSourceID` " .
+            "FROM `House` " .
+            "WHERE `HouseID` = %d ",
             array (
-                $this->phone->formatted_number
-                )
+                $this->UserData['HouseID']
+            )
+        );
+        $result = $Db->Query();
+        if (!isset($result->MLSSourceID)) {
+            $this->error = "Wrong HouseID\n";
+            return false;
+        }
+        $this->MLSSourceID = $result->MLSSourceID;
+        
+        //GET SalesPersonID
+        $Db->PrepareQuery(
+            "SELECT S.`SalesPersonID` " .
+            "FROM `GA_User` U " .
+            "LEFT JOIN `GA_SalesPerson` S " .
+            "ON S.`UserID` = U.`UserID` " .
+            "WHERE " .
+            "U.`HasCancelled` = 0 AND " .
+            "U.`MLSSourceIDs` LIKE '%%%d%%' AND " .
+            "S.`ReceivePhoneAlerts` = 1 " .
+            "ORDER BY Rand() " .
+            "LIMIT 1; ",
+            array (
+                $this->MLSSourceID,
+            )
+        );
+        $result = $Db->Query();
+        if (isset($result->SalesPersonID)) {
+            $this->SalesPersonID = intval($result->SalesPersonID);
+        }
+        
+        //check did lead with same phone adn email exist
+        $Db->PrepareQuery(
+            "SELECT `LeadID` FROM `GA_Lead` WHERE `Phone` = '%s' AND `Email` = '%s' LIMIT 1;",
+            array (
+                $this->phone->formatted_number,
+                $this->UserData['Email'],
+            )
         );
         
         $result = $Db->Query();
         
         if (isset($result->LeadID)) {
             $this->error = sprintf(
-                    "User with phone number %s already exist",
-                    $this->phone->formatted_number
+                    "Lead with phone number '%s' and email '%s' already exist\n",
+                    $this->phone->formatted_number,
+                    $this->UserData['Email']
             );
             return false;
         }
         
-        
+        //Save Lead
         $Db->PrepareQuery(
-                "INSERT INTO `GA_Lead` (`Name`, `Phone`, `Email`) VALUES ('%s','%s', '%s');",
-                array(
-                    $this->UserData['ClientName'],
-                    $this->phone->formatted_number,
-                    $this->UserData['ClientEmail']
-                )
+            "INSERT INTO `GA_Lead` (`Name`, `Phone`, `Email`, `Source`, `SalesPersonID`) " . 
+            "VALUES ('%s', '%s', '%s', '%s', %d)",
+            array(
+                $this->UserData['Name'],
+                $this->phone->formatted_number,
+                $this->UserData['Email'],
+                $this->Source,
+                $this->SalesPersonID
+            )
         );
         
         if (!$result = $Db->Query()) {
-            $this->error = "Wrong query";
+            $this->error = "Wrong query\n";
             return false;
         }
         
