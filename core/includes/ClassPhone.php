@@ -1,5 +1,5 @@
 <?php
-
+//6 / 3
 /*
  * Phone number validation by TwillioLookup
  * Check for company number
@@ -96,21 +96,49 @@ class PhoneModel
         if (!$this->number || !is_string($this->number)) {
             return false;
         }
+        
+        //parse numers
+        $arr = str_split($this->number);
+        $number = "";
+        $n = 0;
+        foreach ($arr as $k=>$d) {
+            if ($k == 0 && $d == "+") {
+                $number .= $d;
+            }
+            if (is_numeric($d)) {
+                $number .= $d;
+                $n ++;
+            }
+        }
+        if ($n >= 10 && $n <= 12) {
+            return true;
+        }
+        return false;
 
         /*
         * Pattern for International or Dialed in the US number
         * International: +1-541-754-3010
         * Dialed in the US: 1-541-754-3010
         */
-        $pattern_1 = '/^(\+?)(1{1})-\d{3}-\d{3}-\d{4}$/';
+        $pattern_1 = '/^(\+?)(1{0,1})-?\d{3}-?\d{3}-?\d{4}$/';
 
         /*
         * Pattern for Domestic number
         * Domestic: (541) 754-3010
         */
-        $pattern_2 = '/^\(\d{3}\)\s\d{3}-\d{4}$/';
+        $pattern_2 = '/^\(\d{3}\)\s\d{3}-?\s?\d{4}$/';
+        
+        /*
+         * Ukraine numbers
+         * for test: +
+         */
+        $pattern_3 = '/^\+\d{12}$/';
 
-        if (preg_match($pattern_1, trim($this->number)) || preg_match($pattern_2, trim($this->number))) {
+        if (
+            preg_match($pattern_1, trim($this->number)) ||
+            preg_match($pattern_2, trim($this->number)) ||
+            preg_match($pattern_3, trim($this->number))
+        ) {
             return true;
         }
 

@@ -1,9 +1,15 @@
 <?php
+//1
+/*
+ * Need to be rewritten
+ * !!!!!!
+ */
 include_once dirname(__FILE__) . '/../core/init.php';
 
-class DbTest extends PHPUnit_Extensions_Database_TestCase
+class DbTest extends PHPUnit_Framework_TestCase
 {
     private $config = array();
+    private $Db = NULL;
 
     public function __construct() 
     {
@@ -15,16 +21,31 @@ class DbTest extends PHPUnit_Extensions_Database_TestCase
             'twilio'    => $twilio,
             'DBconfig'  => $DBconfig
         );
+        
+        $this->Db = new DbModel($DBconfig);
     }
    
+    
     public function getConnection()
-    {
-        $pdo = new PDO('sqlite::memory:');
-        return $this->createDefaultDBConnection($pdo, ':memory:');
+    {   
     }
     
     public function getDataSet()
     {
-        return $this->createFlatXMLDataSet(dirname(__FILE__).'/_files/data-seed.xml');
+    }
+    
+    public function testConnection()
+    {
+        
+        $config1 = $this->config['DBconfig'];
+        $Db1 = new DbModel($config1);
+        $this->assertEquals(true, $Db1->CheckConnection());
+        
+        
+        $config2 = $this->config['DBconfig'];
+        $config2['username'] = "test1";
+        @$Db2 = new DbModel($config2);
+        $this->assertEquals(false, $Db2->CheckConnection());
+        
     }
 }

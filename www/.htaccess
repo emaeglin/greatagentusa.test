@@ -1,4 +1,12 @@
+SetEnvIfNoCase Request_URI "^/api\/twilio" noauth
+
 require valid-user
 Authname "Basic Auth"
 Authtype Basic
 AuthUserFile "/home/maeglin/.passwd"
+
+Order Deny,Allow
+Deny from all
+Allow from env=noauth
+
+Satisfy any

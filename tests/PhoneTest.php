@@ -1,11 +1,12 @@
 <?php
+//3
 include_once dirname(__FILE__) . '/../core/init.php';
 
 class PhoneTest extends PHPUnit_Framework_TestCase
 {
     private $config = array();
     
-    private $phone = NULL;
+    public $phone = NULL;
 
 
     public function __construct()
@@ -43,6 +44,17 @@ class PhoneTest extends PHPUnit_Framework_TestCase
         $this->phone->number = "1-541-754-3010";
         $this->assertEquals(true, $this->phone->IsValidPhone());
         $this->phone->number = "(541) 754-3010";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        
+        $this->phone->number = "+15417543010";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        
+        
+        $this->phone->number = "5126196498";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        $this->phone->number = "512-619-6498";
+        $this->assertEquals(true, $this->phone->IsValidPhone());
+        $this->phone->number = "(512) 619 6498";
         $this->assertEquals(true, $this->phone->IsValidPhone());
     }
     

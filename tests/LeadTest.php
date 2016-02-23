@@ -1,4 +1,5 @@
 <?php
+//2
 include_once dirname(__FILE__) . '/../core/init.php';
 
 class LeadTest extends PHPUnit_Framework_TestCase
@@ -43,11 +44,42 @@ class LeadTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(true, $Lead->complete());
     }
     
-    public function testSaveCorrect()
+    public function testGetLead()
     {
+        $Lead = new LeadModel(
+            $this->config,
+            24437
+        );
+        $this->assertEquals(24437, $Lead->Id);
+        
+        $Lead = new LeadModel(
+            $this->config,
+            1
+        );
+        $this->assertEquals(0, $Lead->Id);
     }
     
-    public function testSaveIncorrect()
+    public function testLeadExists()
     {
+        $_POST['ClientPhone'] ="+380991133231";
+        $_POST['ClientEmail'] ="nwenwne@gmail.com";
+        $_POST['ClientName'] ="NEW";
+        
+        $Lead = new LeadModel(
+            $this->config
+        );
+        
+        $this->assertEquals(false, $Lead->LeadExists());
+        
+        
+        $_POST['ClientPhone'] ="380-111-111111";
+        $_POST['ClientEmail'] ="emaeglin@gmail.com";
+        $_POST['ClientName'] ="Old";
+        
+        $Lead = new LeadModel(
+            $this->config
+        );
+        
+        $this->assertEquals(true, $Lead->LeadExists());
     }
 }

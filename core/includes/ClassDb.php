@@ -1,5 +1,5 @@
 <?php
-
+//5 / 1 
 class DbModel
 {
     private $DbHost     = false;
@@ -13,7 +13,7 @@ class DbModel
     public $error       = "";
     
     private $query  = "";
-
+    
     public function __construct($config) 
     {
         if (!isset($config) || !is_array($config)) {
@@ -63,6 +63,15 @@ class DbModel
         
         return true;
     }
+    
+    public function CheckConnection()
+    {
+        return (
+                is_object($this->DbConnection) && 
+                isset($this->DbConnection->connect_errno) && 
+                $this->DbConnection->connect_errno == 0
+                ) ? true : false;
+    }
  
     public function PrepareQuery($query_pattern, $arguments = array())
     {
@@ -91,7 +100,15 @@ class DbModel
         
         if ($result = $this->DbConnection->query($this->query)) {
             if (is_object($result)) {
-                return $result->fetch_object();
+                $response = array();
+                while ($obj = $result->fetch_object()) {
+                    $response[] = $obj;
+                }
+                if (count($response) == 1) {
+                    return $response[0];
+                } else {
+                    return $response;
+                }
             } else {
                 return true;
             }

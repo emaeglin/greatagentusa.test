@@ -14,10 +14,8 @@ if ($Lead->Complete()) {
     if (!$Lead->Save()) {
         PageModel::Error($Lead->error);
     } else {
-        echo "Lead ID: " . $Lead->Id;
-        echo "<br>";
-        PageModel::Success($Lead->UserData['IsCompanyPhone']);
+        PageModel::Success($Lead);
     }
 } else {
-    PageModel::Error();
+    PageModel::Error("Incomplete");
 }
