@@ -1,7 +1,5 @@
 # greatagentusa.test
 
-Demo: http://emaeglin.com/
-
 - __www/__
   - __index.html__ : Main HTML file with registration form
   - __js/__
